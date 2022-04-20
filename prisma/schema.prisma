@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  password String?
+}
+
+model categories {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  tests tests[]
+}
+
+model teachers {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique
+  teachersDisciplines teachersDisciplines[]
+}
+
+model terms {
+  id          Int           @id @default(autoincrement())
+  number      Int           @unique
+  disciplines disciplines[]
+}
+
+model disciplines {
+  id                  Int                   @id @default(autoincrement())
+  number              Int                   @unique
+  terms               terms                 @relation(fields: [termId], references: [id])
+  termId              Int
+  teachersDisciplines teachersDisciplines[]
+}
+
+model teachersDisciplines {
+  id           Int         @id @default(autoincrement())
+  teacher      teachers    @relation(fields: [teacherId], references: [id])
+  teacherId    Int
+  disciplines  disciplines @relation(fields: [disciplineId], references: [id])
+  disciplineId Int
+  tests        tests[]
+}
+
+model tests {
+  id                  Int                 @id @default(autoincrement())
+  name                String
+  pdfUrl              String
+  category            categories          @relation(fields: [categoryId], references: [id])
+  categoryId          Int
+  teachersDisciplines teachersDisciplines @relation(fields: [teacherDisciplineId], references: [id])
+  teacherDisciplineId Int
+}
