@@ -33,10 +33,11 @@ export async function findUserById(id: number) {
 
 export async function insertOneSession(userId: number) {
 
-  await client.sessions.create({
+  const session = await client.sessions.create({
     data: { userId: userId }
   })
 
+  return session
 }
 
 export async function findSessionById(id: number) {
