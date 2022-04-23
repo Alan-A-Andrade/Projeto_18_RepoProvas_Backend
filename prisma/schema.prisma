@@ -34,7 +34,7 @@ model terms {
 
 model disciplines {
   id                  Int                   @id @default(autoincrement())
-  number              Int                   @unique
+  name                String                @unique
   terms               terms                 @relation(fields: [termId], references: [id])
   termId              Int
   teachersDisciplines teachersDisciplines[]
