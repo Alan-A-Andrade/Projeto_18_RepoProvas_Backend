@@ -8,13 +8,7 @@ import { verifyToken } from "../services/authServices.js";
 const authRouter: Router = Router();
 
 authRouter.post("/signUp", validateSchemaMiddleware(authSchema), authController.signUp)
-authRouter.get("/hello", async (req, res) => {
-
-  const token = req.headers.authorization as string
-  const user = await verifyToken(token)
-
-  res.send({ userId: user })
-})
+authRouter.get("/hello", (req, res) => { res.send("Hello World!") })
 authRouter.post("/signIn", validateSchemaMiddleware(authSchema), authController.signIn)
 
 export default authRouter
