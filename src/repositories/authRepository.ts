@@ -52,6 +52,19 @@ export async function findSessionById(id: number) {
   return session
 }
 
+export async function updateUserEmail({ id, password }: interfaces.userSignUp) {
+  const user = await client.users.update({
+    where: {
+      id: id
+    },
+    data: {
+      password: password
+    }
+  })
+
+  return user
+}
+
 export async function upsertUserByEmail({ email, githubId }: interfaces.userSignUp) {
 
   const user = await client.users.upsert({

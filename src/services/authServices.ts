@@ -22,6 +22,20 @@ export async function signIn({ password, email }: interfaces.userSignUp) {
 
   const user = await authRepository.findUserByEmail(email)
 
+  if (!user.email) {
+
+    const user = await authRepository.upsertUserByEmail({ email, password })
+
+    const session = await authRepository.insertOneSession(user.id)
+
+    const chaveSecreta = process.env.JWT_SECRET;
+
+    const token = jwt.sign(session.id.toString(), chaveSecreta);
+
+    return token
+
+  }
+
   const checkAuth = bcrypt.compareSync(password, user.password)
 
   if (!checkAuth) {
