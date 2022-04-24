@@ -3,10 +3,11 @@ import * as interfaces from "../interfaces/index.js";
 
 export async function insertOneUser(data: interfaces.userSignUp) {
 
-  await client.users.create({
+  const user = await client.users.create({
     data: data
   })
 
+  return user
 }
 
 export async function findUserByEmail(email: string) {
@@ -50,5 +51,34 @@ export async function findSessionById(id: number) {
 
   return session
 }
+
+export async function upsertUserByEmail({ email, githubId }: interfaces.userSignUp) {
+
+  const user = await client.users.upsert({
+    where: {
+      email: email
+    },
+    update: {
+      githubId: githubId
+    },
+    create: {
+      githubId: githubId
+    }
+  })
+
+  return user
+}
+
+export async function findUserByGitHubId(githubId: number) {
+
+  const user = await client.users.findUnique({
+    where: {
+      githubId: githubId
+    }
+  })
+
+  return user
+}
+
 
 

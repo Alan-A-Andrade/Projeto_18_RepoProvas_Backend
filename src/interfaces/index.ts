@@ -2,9 +2,10 @@ export interface user {
   id: number
   email: string
   password: string
+  githubId: number
 }
 
-export type userSignUp = Omit<user, "id">
+export type userSignUp = Partial<user>
 
 export type userSignIn = Omit<userSignUp, "name">
 

@@ -9,8 +9,9 @@ datasource db {
 
 model users {
   id       Int        @id @default(autoincrement())
-  email    String     @unique
+  email    String?    @unique
   password String?
+  githubId Int?       @unique
   sessions sessions[]
 }
 

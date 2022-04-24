@@ -23,6 +23,7 @@
   "homepage": "https://github.com/Alan-A-Andrade/Projeto_18_RepoProvas_Backend#readme",
   "dependencies": {
     "@prisma/client": "^3.12.0",
+    "axios": "^0.26.1",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",

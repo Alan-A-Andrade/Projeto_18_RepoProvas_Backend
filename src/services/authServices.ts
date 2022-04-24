@@ -51,3 +51,44 @@ export async function verifyToken(token: string) {
   return session.userId
 
 }
+
+export async function signInGitHub(githubId: number, email: string) {
+
+  const githubUser = await authRepository.findUserByGitHubId(githubId)
+
+  if (!githubUser) {
+
+    if (!email) {
+      const user = await authRepository.insertOneUser({ githubId })
+
+      const session = await authRepository.insertOneSession(user.id)
+
+      const chaveSecreta = process.env.JWT_SECRET;
+
+      const token = jwt.sign(session.id.toString(), chaveSecreta);
+
+      return token
+
+    }
+
+    const user = await authRepository.upsertUserByEmail({ email: email, githubId: githubId })
+
+    const session = await authRepository.insertOneSession(user.id)
+
+    const chaveSecreta = process.env.JWT_SECRET;
+
+    const token = jwt.sign(session.id.toString(), chaveSecreta);
+
+    return token
+
+  }
+
+  const session = await authRepository.insertOneSession(githubUser.id)
+
+  const chaveSecreta = process.env.JWT_SECRET;
+
+  const token = jwt.sign(session.id.toString(), chaveSecreta);
+
+  return token
+
+}
