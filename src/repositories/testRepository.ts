@@ -9,3 +9,11 @@ export async function findAllTests() {
 
   return data
 }
+
+export async function createTest(data: interfaces.testCreateData) {
+
+  await client.tests.create({
+    data: data
+
+  })
+}

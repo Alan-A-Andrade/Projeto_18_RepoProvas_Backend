@@ -1,17 +1,15 @@
-export interface user {
-  id: number
-  email: string
-  password: string
-  githubId: number
-}
+import { users, sessions, tests } from "@prisma/client"
+
+export type user = Required<users>
 
 export type userSignUp = Partial<user>
 
 export type userSignIn = Omit<userSignUp, "name">
 
-export interface session {
-  id: number
-  userId: number
-}
+export type session = Required<sessions>
 
 export type sessionCreateData = Omit<session, "id">
+
+export type test = Required<tests>
+
+export type testCreateData = Omit<test, "id">

@@ -10,3 +10,13 @@ export async function getAllTests(req: Request, res: Response) {
   res.send(data);
 
 };
+
+export async function createTest(req: Request, res: Response) {
+
+  const data: interfaces.testCreateData = req.body
+
+  await testServices.createTest(data)
+
+  res.sendStatus(201);
+
+};

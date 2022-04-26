@@ -1,9 +1,16 @@
 import * as testRepository from "../repositories/testRepository.js"
+import * as interfaces from "../interfaces/index.js";
 
 export async function getAllTests() {
 
   const testData = await testRepository.findAllTests()
 
   return testData
+
+}
+
+export async function createTest(data: interfaces.testCreateData) {
+
+  await testRepository.createTest(data)
 
 }
