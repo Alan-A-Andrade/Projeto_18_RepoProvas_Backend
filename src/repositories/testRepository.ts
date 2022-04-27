@@ -14,6 +14,5 @@ export async function createTest(data: interfaces.testCreateData) {
 
   await client.tests.create({
     data: data
-
   })
 }
