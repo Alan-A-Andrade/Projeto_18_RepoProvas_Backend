@@ -20,3 +20,13 @@ export async function createTest(req: Request, res: Response) {
   res.sendStatus(201);
 
 };
+
+export async function addView(req: Request, res: Response) {
+
+  const { id } = req.params
+
+  await testServices.updateViewCount(parseInt(id))
+
+  res.sendStatus(200);
+
+};

@@ -14,3 +14,9 @@ export async function createTest(data: interfaces.testCreateData) {
   await testRepository.createTest(data)
 
 }
+
+export async function updateViewCount(testId: number) {
+
+  await testRepository.addView(testId)
+
+}

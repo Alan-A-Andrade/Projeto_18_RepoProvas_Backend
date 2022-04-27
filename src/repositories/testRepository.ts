@@ -16,3 +16,16 @@ export async function createTest(data: interfaces.testCreateData) {
     data: data
   })
 }
+
+export async function addView(testId: number) {
+
+  await client.tests.update({
+    where: {
+      id: testId
+    },
+    data: {
+      views: { increment: 1 }
+    }
+
+  })
+}

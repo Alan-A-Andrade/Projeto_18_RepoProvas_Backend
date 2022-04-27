@@ -10,6 +10,7 @@ testRouter.use(ValidateToken)
 
 testRouter.get("/", testController.getAllTests)
 testRouter.post("/", validateSchemaMiddleware(testSchema), testController.createTest)
+testRouter.patch("/:id/addView", testController.addView)
 
 
 export default testRouter
