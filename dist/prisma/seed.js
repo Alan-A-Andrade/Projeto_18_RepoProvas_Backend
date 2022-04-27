@@ -34,20 +34,40 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import app from '../src';
-import supertest from 'supertest';
-describe("GET /auth/hello", function () {
-    it("given a valid task it should return 201", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var result, status;
+import { client } from '../src/database.js';
+function main() {
+    return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, supertest(app).get("/auth/hello").send()];
+                case 0: 
+                //upsert = update/insert
+                //melhor que create por que pode dar conflito em campos unicos
+                return [4 /*yield*/, client.users.upsert({
+                        where: { email: "teste123@mail.com" },
+                        update: {},
+                        create: {
+                            email: "teste123@mail.com"
+                        }
+                    })];
                 case 1:
-                    result = _a.sent();
-                    status = result.text;
-                    expect(status).toEqual("Hello World!");
+                    //upsert = update/insert
+                    //melhor que create por que pode dar conflito em campos unicos
+                    _a.sent();
                     return [2 /*return*/];
             }
         });
-    }); });
-});
+    });
+}
+main()["catch"](function (e) {
+    console.log(e);
+    process.exit(1);
+})["finally"](function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, client.$disconnect()];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });

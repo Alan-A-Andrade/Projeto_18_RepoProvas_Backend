@@ -7,8 +7,6 @@ describe("GET /auth/hello", () => {
     const result = await supertest(app).get("/auth/hello").send();
     const status = result.text;
 
-    console.log(result)
-
     expect(status).toEqual("Hello World!");
   });
 });
