@@ -14,5 +14,9 @@ app.use(json());
 app.use(router)
 app.use(errorHandlingMiddleware)
 
+app.listen(process.env.PORT || 5000, () => {
+  console.log("Server running on port 5000");
+});
 
-app.listen(process.env.PORT || 5000);
+
+export default app
