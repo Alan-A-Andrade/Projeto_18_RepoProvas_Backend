@@ -58,7 +58,7 @@ export async function verifyToken(token: string) {
       user = authRepository.findUserByEmail(email)
     }
     else {
-      user = authRepository.findUserByEmail(email)
+      user = authRepository.findUserByGitHubId(githubId)
     }
     if (!user) {
       throw { type: "Unauthorized" }
