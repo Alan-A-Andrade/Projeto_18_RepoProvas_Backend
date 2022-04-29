@@ -1,0 +1,11 @@
+import { Router } from "express";
+import { ValidateToken } from "../middlewares/validateTokenMiddleware.js";
+import * as testController from "../controllers/testController.js";
+import validateSchemaMiddleware from "../middlewares/validateSchemaMiddleware.js";
+import testSchema from "../schemas/testSchema.js";
+var testRouter = Router();
+testRouter.use(ValidateToken);
+testRouter.get("/", testController.getAllTests);
+testRouter.post("/", validateSchemaMiddleware(testSchema), testController.createTest);
+testRouter.patch("/:id/addView", testController.addView);
+export default testRouter;
