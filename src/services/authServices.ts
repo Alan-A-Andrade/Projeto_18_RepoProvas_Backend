@@ -9,7 +9,7 @@ export async function signUp({ password, email }: interfaces.userSignUp) {
   const user = await authRepository.findUserByEmail(email)
 
   if (user) {
-    throw { type: "Bad_Request" }
+    throw { type: "Conflict" }
   }
 
   const hashPassword = bcrypt.hashSync(password, 10)
@@ -22,19 +22,10 @@ export async function signIn({ password, email }: interfaces.userSignUp) {
 
   const user = await authRepository.findUserByEmail(email)
 
-  if (!user.email) {
-
-    const user = await authRepository.upsertUserByEmail({ email, password })
-
-    const session = await authRepository.insertOneSession(user.id)
-
-    const chaveSecreta = process.env.JWT_SECRET;
-
-    const token = jwt.sign(session.id.toString(), chaveSecreta);
-
-    return token
-
+  if (!user) {
+    throw { type: "Unauthorized" }
   }
+
 
   const checkAuth = bcrypt.compareSync(password, user.password)
 
@@ -42,11 +33,11 @@ export async function signIn({ password, email }: interfaces.userSignUp) {
     throw { type: "Unauthorized" }
   }
 
-  const session = await authRepository.insertOneSession(user.id)
-
   const chaveSecreta = process.env.JWT_SECRET;
 
-  const token = jwt.sign(session.id.toString(), chaveSecreta);
+  delete user.password
+
+  const token = jwt.sign(user, chaveSecreta);
 
   return token
 
@@ -58,11 +49,26 @@ export async function verifyToken(token: string) {
 
   const chaveSecreta = process.env.JWT_SECRET;
 
-  const sessionId = jwt.verify(token, chaveSecreta) as string
+  try {
 
-  const session = await authRepository.findSessionById(parseInt(sessionId))
+    const { id, email, githubId } = jwt.verify(token, chaveSecreta) as { id: number, email: string | undefined, githubId: number | undefined }
 
-  return session.userId
+    let user
+    if (!githubId) {
+      user = authRepository.findUserByEmail(email)
+    }
+    else {
+      user = authRepository.findUserByEmail(email)
+    }
+    if (!user) {
+      throw { type: "Unauthorized" }
+    }
+
+    return user
+
+  } catch {
+    throw { type: "Unauthorized" }
+  }
 
 }
 
@@ -75,11 +81,11 @@ export async function signInGitHub(githubId: number, email: string) {
     if (!email) {
       const user = await authRepository.insertOneUser({ githubId })
 
-      const session = await authRepository.insertOneSession(user.id)
-
       const chaveSecreta = process.env.JWT_SECRET;
 
-      const token = jwt.sign(session.id.toString(), chaveSecreta);
+      delete user.password
+
+      const token = jwt.sign(user, chaveSecreta);
 
       return token
 
@@ -87,21 +93,21 @@ export async function signInGitHub(githubId: number, email: string) {
 
     const user = await authRepository.upsertUserByEmail({ email: email, githubId: githubId })
 
-    const session = await authRepository.insertOneSession(user.id)
-
     const chaveSecreta = process.env.JWT_SECRET;
 
-    const token = jwt.sign(session.id.toString(), chaveSecreta);
+    delete user.password
+
+    const token = jwt.sign(user, chaveSecreta);
 
     return token
 
   }
 
-  const session = await authRepository.insertOneSession(githubUser.id)
-
   const chaveSecreta = process.env.JWT_SECRET;
 
-  const token = jwt.sign(session.id.toString(), chaveSecreta);
+  delete githubUser.password
+
+  const token = jwt.sign(githubUser, chaveSecreta);
 
   return token
 

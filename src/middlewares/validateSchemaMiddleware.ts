@@ -13,7 +13,7 @@ export default function validateSchemaMiddleware(schema: Schema) {
 
       console.log(validation.error)
 
-      throw { type: "Bad_Request" };
+      throw { type: "Unprocessable_Entity" };
     }
 
     next();

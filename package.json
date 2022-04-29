@@ -11,9 +11,6 @@
     "start": "node dist/server.js",
     "test-migrate": "npx dotenv -e .env.test prisma migrate dev"
   },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Alan-A-Andrade/Projeto_18_RepoProvas_Backend.git"
@@ -40,6 +37,7 @@
     "pg": "^8.7.3"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.2.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
@@ -54,5 +52,9 @@
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
+

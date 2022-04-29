@@ -1,15 +1,18 @@
 import { client } from '../src/database.js'
+import bcrypt from 'bcrypt'
 
 async function main() {
-  //upsert = update/insert
-  //melhor que create por que pode dar conflito em campos unicos
+
   await client.users.upsert({
     where: { email: "teste123@mail.com" },
     update: {},
     create: {
       email: "teste123@mail.com",
+      password: bcrypt.hashSync("123", 10)
     },
   });
+
+
 }
 
 main()
