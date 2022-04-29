@@ -32,25 +32,6 @@ export async function findUserById(id: number) {
   return user
 }
 
-export async function insertOneSession(userId: number) {
-
-  const session = await client.sessions.create({
-    data: { userId: userId }
-  })
-
-  return session
-}
-
-export async function findSessionById(id: number) {
-
-  const session = await client.sessions.findUnique({
-    where: {
-      id: id
-    }
-  })
-
-  return session
-}
 
 export async function updateUserEmail({ id, password }: interfaces.userSignUp) {
   const user = await client.users.update({

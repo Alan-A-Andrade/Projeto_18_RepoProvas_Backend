@@ -1,4 +1,3 @@
-// /tests/factories/userBodyFactory.ts
 
 import { faker } from "@faker-js/faker";
 import * as interfaces from "../../src/interfaces"
