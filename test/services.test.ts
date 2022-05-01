@@ -141,7 +141,8 @@ describe("Route/Tests tests - POST tests", () => {
     expect(response.status).toEqual(422);
   });
 
-  it("should return 201 and persist the user given a valid body", async () => {
+
+  it("should return 201 and persist the user given a valid inputs", async () => {
 
     const { categoryId, teacherDisciplineId } = await requiredFactory()
 

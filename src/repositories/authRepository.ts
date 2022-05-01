@@ -75,4 +75,13 @@ export async function findUserByGitHubId(githubId: number) {
 }
 
 
+export async function getAllUserEmails() {
 
+  const emails = await client.users.findMany({
+    select: {
+      email: true
+    }
+  })
+
+  return emails
+}

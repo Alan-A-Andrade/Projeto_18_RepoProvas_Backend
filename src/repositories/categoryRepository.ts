@@ -25,3 +25,13 @@ export async function findAllCategories() {
 
   return data
 }
+
+
+export async function findCategoryById(id: number) {
+
+  const teacherDiscipline = await client.categories.findUnique({
+    where: { id: id }
+  })
+
+  return teacherDiscipline
+}

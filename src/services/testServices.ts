@@ -1,5 +1,14 @@
 import * as testRepository from "../repositories/testRepository.js"
+import * as categoryRepository from "../repositories/categoryRepository.js"
+import * as teacherDisciplineRepository from "../repositories/teacherDisciplineRepository.js"
+import * as disciplineRepository from "../repositories/disciplineRepository.js"
+import * as teacherRepository from "../repositories/teacherRepository.js"
+import * as authRepository from "../repositories/authRepository.js"
 import * as interfaces from "../interfaces/index.js";
+import sgMail from '@sendgrid/mail'
+import { createEmailText } from "../utils/emailUtils.js";
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 export async function getAllTests() {
 
@@ -11,7 +20,43 @@ export async function getAllTests() {
 
 export async function createTest(data: interfaces.testCreateData) {
 
+
+  const categoriesData = await categoryRepository.findCategoryById(data.categoryId)
+
+  if (!categoriesData) {
+    throw { type: "Unprocessable_Entity" }
+  }
+
+  const teacherDiscipline = await teacherDisciplineRepository.findTeacherDisciplineById(data.teacherDisciplineId)
+
+  if (!teacherDiscipline) {
+    throw { type: "Unprocessable_Entity" }
+  }
+
   await testRepository.createTest(data)
+
+  const emails = await authRepository.getAllUserEmails()
+
+  const teacher = await teacherRepository.findTeacherById(teacherDiscipline.teacherId)
+
+  const discipline = await disciplineRepository.findDisciplineById(teacherDiscipline.disciplineId)
+
+  const emailArray = emails.map(el => el.email)
+
+  const msg = {
+    to: emailArray,
+    from: 'alanaa92@gmail.com',
+    subject: `RepoProvas - Nova prova adicionada`,
+    text: createEmailText(teacher.name, categoriesData.name, data.name, discipline.name)
+  };
+
+  sgMail.sendMultiple(msg)
+    .then(() => {
+      console.log('Email sent')
+    })
+    .catch((error) => {
+      console.error(error)
+    })
 
 }
 

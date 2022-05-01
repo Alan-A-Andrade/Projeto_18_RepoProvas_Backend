@@ -14,3 +14,16 @@ export async function findAllDisciplines() {
 
   return data
 }
+
+export async function findDisciplineById(disciplineId: number) {
+
+  const data = await client.disciplines.findUnique(
+    {
+      where: {
+        id: disciplineId
+      }
+    }
+  )
+
+  return data
+}

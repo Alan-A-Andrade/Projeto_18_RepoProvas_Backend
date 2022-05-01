@@ -15,3 +15,17 @@ export async function findAllTeachers() {
 
   return data
 }
+
+
+export async function findTeacherById(teacherId: number) {
+
+  const data = await client.teachers.findUnique(
+    {
+      where: {
+        id: teacherId
+      }
+    }
+  )
+
+  return data
+}

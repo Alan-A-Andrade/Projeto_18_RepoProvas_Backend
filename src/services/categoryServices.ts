@@ -7,3 +7,4 @@ export async function getAllCategories() {
   return categoriesData
 
 }
+
