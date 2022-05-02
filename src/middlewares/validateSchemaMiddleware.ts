@@ -7,8 +7,6 @@ export default function validateSchemaMiddleware(schema: Schema) {
 
     const validation = schema.validate(req.body);
 
-
-
     if (validation.error) {
 
       console.log(validation.error)

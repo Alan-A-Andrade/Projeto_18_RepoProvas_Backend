@@ -18,36 +18,33 @@ export async function getAllTests() {
 
 }
 
-export async function createTest(data: interfaces.testCreateData) {
+export async function createTest(data) {
 
+  const formData = { ...data }
+  formData.categoryId = parseInt(formData.categoryId)
+  formData.teacherDisciplineId = parseInt(formData.teacherDisciplineId)
 
-  const categoriesData = await categoryRepository.findCategoryById(data.categoryId)
-
+  const categoriesData = await categoryRepository.findCategoryById(formData.categoryId)
   if (!categoriesData) {
     throw { type: "Unprocessable_Entity" }
   }
 
-  const teacherDiscipline = await teacherDisciplineRepository.findTeacherDisciplineById(data.teacherDisciplineId)
-
+  const teacherDiscipline = await teacherDisciplineRepository.findTeacherDisciplineById(formData.teacherDisciplineId)
   if (!teacherDiscipline) {
     throw { type: "Unprocessable_Entity" }
   }
 
-  await testRepository.createTest(data)
+  await testRepository.createTest(formData)
 
   const emails = await authRepository.getAllUserEmails()
-
   const teacher = await teacherRepository.findTeacherById(teacherDiscipline.teacherId)
-
   const discipline = await disciplineRepository.findDisciplineById(teacherDiscipline.disciplineId)
-
   const emailArray = emails.map(el => el.email)
-
   const msg = {
     to: emailArray,
     from: 'alanaa92@gmail.com',
     subject: `RepoProvas - Nova prova adicionada`,
-    text: createEmailText(teacher.name, categoriesData.name, data.name, discipline.name)
+    text: createEmailText(teacher.name, categoriesData.name, formData.name, discipline.name)
   };
 
   sgMail.sendMultiple(msg)

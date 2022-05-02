@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import * as interfaces from "../interfaces/index.js";
 import * as testServices from "../services/testServices.js"
 
-
 export async function getAllTests(req: Request, res: Response) {
 
   const data = await testServices.getAllTests()
@@ -14,6 +13,8 @@ export async function getAllTests(req: Request, res: Response) {
 export async function createTest(req: Request, res: Response) {
 
   const data: interfaces.testCreateData = req.body
+
+  console.log(req.file)
 
   await testServices.createTest(data)
 
