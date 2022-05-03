@@ -49,7 +49,6 @@ export async function createTest(data) {
 
   sgMail.sendMultiple(msg)
     .then(() => {
-      console.log('Email sent')
     })
     .catch((error) => {
       console.error(error)
