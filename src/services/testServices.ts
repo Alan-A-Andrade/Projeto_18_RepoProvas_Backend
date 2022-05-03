@@ -7,6 +7,8 @@ import * as authRepository from "../repositories/authRepository.js"
 import * as interfaces from "../interfaces/index.js";
 import sgMail from '@sendgrid/mail'
 import { createEmailText } from "../utils/emailUtils.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
