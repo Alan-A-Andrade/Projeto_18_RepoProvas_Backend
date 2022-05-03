@@ -28,12 +28,12 @@ export async function createTest(data) {
 
   const categoriesData = await categoryRepository.findCategoryById(formData.categoryId)
   if (!categoriesData) {
-    throw { type: "Unprocessable_Entity" }
+    throw { type: "Conflict" }
   }
 
   const teacherDiscipline = await teacherDisciplineRepository.findTeacherDisciplineById(formData.teacherDisciplineId)
   if (!teacherDiscipline) {
-    throw { type: "Unprocessable_Entity" }
+    throw { type: "Conflict" }
   }
 
   await testRepository.createTest(formData)

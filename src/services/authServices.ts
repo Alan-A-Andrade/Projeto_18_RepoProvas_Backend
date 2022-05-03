@@ -2,6 +2,7 @@ import * as interfaces from "../interfaces/index.js";
 import * as authRepository from "../repositories/authRepository.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
+import { users } from "@prisma/client";
 
 
 export async function signUp({ password, email }: interfaces.userSignUp) {
@@ -53,12 +54,12 @@ export async function verifyToken(token: string) {
 
     const { id, email, githubId } = jwt.verify(token, chaveSecreta) as { id: number, email: string | undefined, githubId: number | undefined }
 
-    let user
+    let user: users
     if (!githubId) {
-      user = authRepository.findUserByEmail(email)
+      user = await authRepository.findUserByEmail(email)
     }
     else {
-      user = authRepository.findUserByGitHubId(githubId)
+      user = await authRepository.findUserByGitHubId(githubId)
     }
     if (!user) {
       throw { type: "Unauthorized" }

@@ -8,8 +8,8 @@ import tokenFactory from "./factories/tokenFactory.js";
 import testFactory from "./factories/testFactory.js";
 import requiredFactory from "./factories/requiredsFactory.js";
 
-describe("Route/User tests - POST auth/signUn", () => {
-  beforeEach(truncateUsers);
+describe("Route/User tests - auth/signUp", () => {
+  beforeEach(truncateTables);
 
   afterAll(disconnect);
 
@@ -52,8 +52,8 @@ describe("Route/User tests - POST auth/signUn", () => {
   });
 });
 
-describe("User tests - POST auth/signin", () => {
-  beforeEach(truncateUsers);
+describe("Route/User tests - auth/signIn", () => {
+  beforeEach(truncateTables);
 
   afterAll(disconnect);
 
@@ -86,7 +86,7 @@ describe("User tests - POST auth/signin", () => {
       .post("/auth/signin")
       .send({
         ...body,
-        password: "bananinha",
+        password: "PasswordErradamenteEscrito",
       });
 
     expect(response.status).toEqual(401);
@@ -95,7 +95,7 @@ describe("User tests - POST auth/signin", () => {
 
 
 describe("Route/Tests tests - GET tests", () => {
-  beforeEach(truncateUsers);
+  beforeEach(truncateTables);
 
   afterAll(disconnect);
 
@@ -123,8 +123,8 @@ describe("Route/Tests tests - GET tests", () => {
 
 });
 
-describe("Route/Tests tests - POST tests", () => {
-  beforeEach(truncateUsers);
+describe("Route/Tests tests - POST/PATCH tests", () => {
+  beforeEach(truncateTables);
 
   afterAll(disconnect);
 
@@ -141,6 +141,48 @@ describe("Route/Tests tests - POST tests", () => {
     expect(response.status).toEqual(422);
   });
 
+
+  it("should return 409 given a valid body but non-existing category", async () => {
+
+    const { categoryId, teacherDisciplineId } = await requiredFactory()
+
+    const token = await tokenFactory()
+
+    const test = testFactory(categoryId + 1, teacherDisciplineId)
+
+    const response = await supertest(app).post("/test").send(test).set('Authorization', token);
+
+
+    const tests = await client.tests.findMany({
+      where: {
+        name: test.name,
+      },
+    });
+
+    expect(response.status).toEqual(409);
+
+  });
+
+
+  it("should return 409 given a valid body but non-existing teacher discipline relation", async () => {
+
+    const { categoryId, teacherDisciplineId } = await requiredFactory()
+
+    const token = await tokenFactory()
+
+    const test = testFactory(categoryId, teacherDisciplineId + 1)
+
+    const response = await supertest(app).post("/test").send(test).set('Authorization', token);
+
+
+    const tests = await client.tests.findMany({
+      where: {
+        name: test.name,
+      },
+    });
+
+    expect(response.status).toEqual(409);
+  });
 
   it("should return 201 and persist the user given a valid inputs", async () => {
 
@@ -163,15 +205,46 @@ describe("Route/Tests tests - POST tests", () => {
     expect(tests.length).toEqual(1)
   });
 
+  it("should add view given a valid patch request", async () => {
+
+    const { categoryId, teacherDisciplineId } = await requiredFactory()
+
+    const token = await tokenFactory()
+
+    const test = testFactory(categoryId, teacherDisciplineId)
+
+    const response = await supertest(app).post("/test").send(test).set('Authorization', token);
+
+    const tests = await client.tests.findMany({
+      where: {
+        name: test.name,
+      },
+    });
+
+
+    const testId = tests[0].id
+
+    const { views: testViewCountBefore } = await client.tests.findUnique({ where: { id: testId } })
+
+    await supertest(app).patch(`/test/${testId}/addView`).send({}).set('Authorization', token);
+
+    const { views: testViewCountAfter } = await client.tests.findUnique({ where: { id: testId } })
+
+    const result = testViewCountAfter - testViewCountBefore
+
+    expect(result).toEqual(1)
+  });
 
 });
+
+
 
 async function disconnect() {
   await client.$disconnect();
 }
 
 
-async function truncateUsers() {
+async function truncateTables() {
   await client.$executeRaw`TRUNCATE TABLE 
   users, 
   tests, 

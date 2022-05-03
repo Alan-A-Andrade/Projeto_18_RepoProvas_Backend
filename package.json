@@ -7,10 +7,9 @@
   "scripts": {
     "dev": "npx nodemon src/server.ts",
     "test": "NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -i",
-    "test-coverage": "NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -i --coverage",
     "build": "tsc",
     "start": "node dist/src/server.js",
-    "test-migrate": "npx dotenv -e .env.test prisma migrate dev"
+    "test-migrate": "npx dotenv -e .env.test prisma seed migrate dev"
   },
   "repository": {
     "type": "git",
